@@ -1,0 +1,47 @@
+import mongoose from "mongoose";
+
+const productSchema = mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, "Please enter prodoct name"],
+    trim: true,
+  },
+  description: {
+    type: String,
+    required: [true, "Please enter product description"],
+  },
+  price: {
+    type: Number,
+    required: [true, "Please enter product price"],
+    maxLength: [6, "Price cannot exceed 6 figures"],
+  },
+  rating: { type: Number, default: 0 },
+  images: [
+    {
+      public_id: { type: String, required: true },
+      url: { type: String, required: true },
+    },
+  ],
+  category: {
+    type: String,
+    required: [true, "Please enter product category"],
+  },
+  stock: {
+    type: Number,
+    required: [true, "Please enter current stock"],
+    maxLength: [4, "Stock cannot exceed 4 figures"],
+  },
+  numOfReviews: { type: Number, default: 0 },
+  reviews: [
+    {
+      name: { type: String, required: true },
+      rating: { type: Number, required: true },
+      comment: { type: String},
+    },
+  ],
+  createdAt: {type: Date, default: Date.now}
+});
+
+const Product = mongoose.model("Product", productSchema);
+
+export default Product;

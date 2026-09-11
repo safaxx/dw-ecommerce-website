@@ -1,11 +1,20 @@
 import Product from "../models/Product.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import catchError from "../middleware/catchAsyncErrors.js";
+import ApiFeatures from "../utils/apiFeatures.js";
 
 export const getAllProducts = catchError(async (req, res) => {
-  const products = await Product.find();
+  const resultsPerPage = 10;
+  const count = await Product.countDocuments();
 
-  res.status(200).json({ success: true, products });
+  const apiFeature = new ApiFeatures(Product.find(), req.query)
+    .search()
+    .filter()
+    .pagination(resultsPerPage);
+
+  const products = await apiFeature.query;
+  //console.log(products.length);
+  res.status(200).json({ success: true, count, products });
 });
 //admin routes
 export const createProduct = catchError(async (req, res, next) => {
@@ -16,7 +25,7 @@ export const createProduct = catchError(async (req, res, next) => {
   });
 });
 
-export const updateProduct = catchError(async  (req, res, next) => {
+export const updateProduct = catchError(async (req, res, next) => {
   let product = await Product.findById(req.params.id);
   if (!product) return next(new ErrorHandler("Product Not Found", 404));
 
@@ -34,8 +43,7 @@ export const updateProduct = catchError(async  (req, res, next) => {
 
 export const deleteProduct = catchError(async (req, res, next) => {
   const product = await Product.findById(req.params.id);
-  if (!product)
-    return next(new ErrorHandler("Product Not Found", 404));
+  if (!product) return next(new ErrorHandler("Product Not Found", 404));
 
   await Product.findByIdAndDelete(req.params.id);
 
@@ -47,8 +55,7 @@ export const deleteProduct = catchError(async (req, res, next) => {
 
 export const getProductDetails = catchError(async (req, res, next) => {
   let product = await Product.findById(req.params.id);
-  if (!product)
-    return next(new ErrorHandler("Product Not Found", 404));
+  if (!product) return next(new ErrorHandler("Product Not Found", 404));
 
   res.status(200).json({
     success: true,

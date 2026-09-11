@@ -12,7 +12,4 @@ export const connectToDB = () => {
     .then((data) => {
       console.log(`mongodb connected server: ${data.connection.host}`);
     })
-    .catch((err) => {
-      console.error(err);
-    });
 };

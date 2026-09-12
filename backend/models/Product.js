@@ -36,12 +36,13 @@ const productSchema = mongoose.Schema({
     {
       name: { type: String, required: true },
       rating: { type: Number, required: true },
-      comment: { type: String},
+      comment: { type: String },
     },
   ],
-  createdAt: {type: Date, default: Date.now}
+  createdBy: { type: mongoose.Schema.ObjectId, ref: "User", required: true },
+  createdAt: { type: Date, default: Date.now },
 });
 
-const Product = mongoose.model("Product", productSchema);
+const ProductModel = mongoose.model("Product", productSchema);
 
-export default Product;
+export default ProductModel;

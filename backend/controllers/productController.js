@@ -1,13 +1,13 @@
-import Product from "../models/Product.js";
+import ProductModel from "../models/Product.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import catchError from "../middleware/catchAsyncErrors.js";
 import ApiFeatures from "../utils/apiFeatures.js";
 
 export const getAllProducts = catchError(async (req, res) => {
   const resultsPerPage = 10;
-  const count = await Product.countDocuments();
+  const count = await ProductModel.countDocuments();
 
-  const apiFeature = new ApiFeatures(Product.find(), req.query)
+  const apiFeature = new ApiFeatures(ProductModel.find(), req.query)
     .search()
     .filter()
     .pagination(resultsPerPage);
@@ -18,7 +18,8 @@ export const getAllProducts = catchError(async (req, res) => {
 });
 //admin routes
 export const createProduct = catchError(async (req, res, next) => {
-  const product = await Product.create(req.body);
+  req.body.createdBy = req.user.id;
+  const product = await ProductModel.create(req.body);
   res.status(201).json({
     success: true,
     product,
@@ -26,10 +27,10 @@ export const createProduct = catchError(async (req, res, next) => {
 });
 
 export const updateProduct = catchError(async (req, res, next) => {
-  let product = await Product.findById(req.params.id);
+  let product = await ProductModel.findById(req.params.id);
   if (!product) return next(new ErrorHandler("Product Not Found", 404));
 
-  product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+  product = await ProductModel.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
@@ -42,10 +43,10 @@ export const updateProduct = catchError(async (req, res, next) => {
 });
 
 export const deleteProduct = catchError(async (req, res, next) => {
-  const product = await Product.findById(req.params.id);
+  const product = await ProductModel.findById(req.params.id);
   if (!product) return next(new ErrorHandler("Product Not Found", 404));
 
-  await Product.findByIdAndDelete(req.params.id);
+  await ProductModel.findByIdAndDelete(req.params.id);
 
   res.status(200).json({
     success: true,
@@ -54,7 +55,7 @@ export const deleteProduct = catchError(async (req, res, next) => {
 });
 
 export const getProductDetails = catchError(async (req, res, next) => {
-  let product = await Product.findById(req.params.id);
+  let product = await ProductModel.findById(req.params.id);
   if (!product) return next(new ErrorHandler("Product Not Found", 404));
 
   res.status(200).json({

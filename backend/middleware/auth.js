@@ -14,11 +14,13 @@ export const isAuthenticated = catchError(async (req, res, next) => {
     return next(new ErrorHandler("Invalid or expired token", 401));
   }
   req.user = await UserModel.findById(decoded.id);
+  if (!req.user) {
+    return next(new ErrorHandler("User no longer exists", 401));
+  }
   next();
 });
 
 export const isAuthorized = (...roles) => {
-  console.log(roles[0]);
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return next(

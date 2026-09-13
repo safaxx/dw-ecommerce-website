@@ -6,7 +6,7 @@ export function error(err, req, res, next) {
 
   //mongodb error - wrong id param
   if(err.name === "CastError"){
-    const msg = `Requested Resource is Invalid: ${err.path}`
+    const msg = `${err.message}`
     err = new ErrorHandler(msg, 400);
   }
 

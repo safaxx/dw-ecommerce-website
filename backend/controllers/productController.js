@@ -5,7 +5,7 @@ import catchError from "../middleware/catchAsyncErrors.js";
 import ApiFeatures from "../utils/apiFeatures.js";
 
 export const getAllProducts = catchError(async (req, res) => {
-  const resultsPerPage = 10;
+  const resultsPerPage = 8;
   const count = await ProductModel.countDocuments();
 
   const apiFeature = new ApiFeatures(ProductModel.find(), req.query)
@@ -125,9 +125,7 @@ export const deleteProdReview = catchError(async (req, res, next) => {
   if (!review) return next(new ErrorHandler("Review Not Found", 404));
 
   if (review.userId.toString() !== req.user._id.toString()) {
-    return next(
-      new ErrorHandler("You can only delete your own review", 403),
-    );
+    return next(new ErrorHandler("You can only delete your own review", 403));
   }
 
   const reviews = product.reviews.filter(

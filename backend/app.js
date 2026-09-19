@@ -1,13 +1,25 @@
 import express from "express";
+import cors from "cors";
 import cookieParser from "cookie-parser";
 import productRouter from "./routes/productRoutes.js"
 import userRouter from "./routes/userRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
 import { error } from "./middleware/error.js";
+import bodyParser from "body-parser";
+// import fileUpload from 'express-fileupload';
 
 const app = express();
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(express.json())
 app.use(cookieParser());
+app.use(bodyParser.urlencoded({extended: true}))
+//app.use(fileUpload());
+
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/orders", orderRouter);

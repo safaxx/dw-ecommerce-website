@@ -1,0 +1,115 @@
+.login-register-box {
+	max-width: 420px;
+	margin: 0 auto;
+	padding: 40px 32px;
+	border: 1px solid #d7d3ca;
+	background: #efece3;
+}
+
+.login-register-toggle {
+	display: flex;
+	gap: 24px;
+	margin-bottom: 28px;
+	border-bottom: 1px solid #d7d3ca;
+}
+
+.login-register-toggle p {
+	position: relative;
+	margin: 0 0 14px;
+	padding-bottom: 14px;
+	color: #68706d;
+	font-weight: 600;
+	font-size: 0.85rem;
+	letter-spacing: 0.06em;
+	cursor: pointer;
+}
+
+.login-register-toggle p.active {
+	color: #18211f;
+}
+
+.login-register-toggle p.active::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: -1px;
+	height: 2px;
+	background: #d05a3b;
+}
+
+.login-register-box p[role="alert"] {
+	margin: 0 0 16px;
+	color: #c0392b;
+	font-size: 0.85rem;
+}
+
+.auth-message {
+	margin: 0 0 16px;
+	color: #2f7a4f;
+	font-size: 0.85rem;
+}
+
+.forgot-password-link {
+	margin: 10px 0 0;
+	text-align: right;
+}
+
+.forgot-password-link span {
+	color: #68706d;
+	font-size: 0.8rem;
+	cursor: pointer;
+}
+
+.forgot-password-link span:hover {
+	color: #d05a3b;
+}
+
+.auth-form {
+	display: grid;
+	gap: 6px;
+}
+
+.auth-form label {
+	margin-top: 12px;
+	color: #68706d;
+	font-size: 0.78rem;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.auth-form input {
+	border: 1px solid #d7d3ca;
+	padding: 10px 12px;
+	color: #18211f;
+	background: #f4f1eb;
+	font: inherit;
+}
+
+.auth-form input:focus {
+	outline: 2px solid #d05a3b;
+	outline-offset: 1px;
+}
+
+.auth-form button[type="submit"] {
+	margin-top: 24px;
+	height: 44px;
+	border: 0;
+	background: #d05a3b;
+	color: #f4f1eb;
+	font: inherit;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	cursor: pointer;
+	transition: background 150ms ease;
+}
+
+.auth-form button[type="submit"]:hover:not(:disabled) {
+	background: #b84a2e;
+}
+
+.auth-form button[type="submit"]:disabled {
+	background: #bcb8af;
+	cursor: not-allowed;
+}

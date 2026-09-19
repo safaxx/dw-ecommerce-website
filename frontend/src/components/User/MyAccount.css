@@ -1,0 +1,209 @@
+.my-account-page h1 {
+	margin-bottom: 8px;
+}
+
+.account-section {
+	max-width: 720px;
+	margin-top: 32px;
+	padding: 28px;
+	border: 1px solid #d7d3ca;
+	background: #efece3;
+}
+
+.account-section h2 {
+	margin: 0 0 20px;
+	font-family: "Space Grotesk", sans-serif;
+	font-size: 1.3rem;
+}
+
+.account-info-grid {
+	display: grid;
+	gap: 18px;
+}
+
+.account-info-grid p {
+	margin: 0;
+}
+
+.account-info-label {
+	display: block;
+	margin-bottom: 4px;
+	color: #68706d;
+	font-size: 0.78rem;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.link-button {
+	border: 0;
+	padding: 0;
+	margin-left: 8px;
+	color: #d05a3b;
+	background: transparent;
+	font: inherit;
+	font-size: 0.8rem;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.account-section .auth-form {
+	max-width: 360px;
+	margin-top: 24px;
+}
+
+.account-password-actions {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	margin-top: 24px;
+}
+
+.account-password-actions .link-button {
+	margin-left: 0;
+}
+
+.order-list {
+	display: grid;
+	gap: 16px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.order-item {
+	display: grid;
+	grid-template-columns: 1fr auto auto auto;
+	align-items: center;
+	gap: 16px;
+	padding: 16px;
+	border: 1px solid #d7d3ca;
+	background: #f4f1eb;
+}
+
+.order-id {
+	margin: 0;
+	font-weight: 600;
+}
+
+.order-date {
+	margin: 4px 0 0;
+	color: #68706d;
+	font-size: 0.8rem;
+}
+
+.order-status {
+	padding: 4px 10px;
+	border-radius: 999px;
+	font-size: 0.75rem;
+	font-weight: 600;
+	text-align: center;
+}
+
+.order-status-processing {
+	color: #8a6d1e;
+	background: #f3e6bd;
+}
+
+.order-status-shipped {
+	color: #1e5a8a;
+	background: #cfe3f3;
+}
+
+.order-status-delivered {
+	color: #2f7a4f;
+	background: #d7ecd9;
+}
+
+.order-status-cancelled {
+	color: #c0392b;
+	background: #f5d3ce;
+}
+
+.order-items-count,
+.order-total {
+	margin: 0;
+	font-size: 0.85rem;
+}
+
+.order-total {
+	font-weight: 700;
+}
+
+.wishlist-placeholder {
+	margin: 0;
+	color: #68706d;
+}
+
+.account-section-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 20px;
+}
+
+.account-section-header h2 {
+	margin: 0;
+}
+
+.order-detail-subtitle {
+	margin: 28px 0 12px;
+	font-family: "Space Grotesk", sans-serif;
+	font-size: 1.05rem;
+}
+
+.order-detail-items {
+	display: grid;
+	gap: 12px;
+	margin: 0 0 24px;
+	padding: 0;
+	list-style: none;
+}
+
+.order-detail-item {
+	display: grid;
+	grid-template-columns: 56px 1fr auto auto;
+	align-items: center;
+	gap: 16px;
+}
+
+.order-detail-item img {
+	width: 56px;
+	height: 56px;
+	object-fit: cover;
+	border: 1px solid #d7d3ca;
+}
+
+.order-price-breakdown {
+	max-width: 320px;
+	margin-left: auto;
+	margin-bottom: 24px;
+}
+
+.order-price-breakdown p {
+	display: flex;
+	justify-content: space-between;
+	margin: 6px 0;
+}
+
+.order-price-total {
+	padding-top: 10px;
+	border-top: 1px solid #d7d3ca;
+	font-weight: 700;
+}
+
+@media (max-width: 680px) {
+	.order-item {
+		grid-template-columns: 1fr;
+		gap: 6px;
+	}
+
+	.order-detail-item {
+		grid-template-columns: 48px 1fr;
+	}
+
+	.order-price-breakdown {
+		margin-left: 0;
+	}
+}

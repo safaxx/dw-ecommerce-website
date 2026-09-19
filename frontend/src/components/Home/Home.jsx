@@ -1,7 +1,7 @@
 import Metadata from "../layout/Metadata";
 import Loader from "../layout/Loader";
 import Product from "./Product";
-import { getProducts } from "../../../app/actions/ProductConstants";
+import { getProducts } from "../../../app/actions/ProductActions";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 

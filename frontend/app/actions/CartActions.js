@@ -1,6 +1,6 @@
 import { ADD_TO_CART } from "../constants/CartConstants";
 
-export const addItemToCart = (product, quantity) => (dispatch) => {
+export const addItemToCart = (product, quantity, size) => (dispatch) => {
   dispatch({
     type: ADD_TO_CART,
     payload: {
@@ -10,6 +10,7 @@ export const addItemToCart = (product, quantity) => (dispatch) => {
       image: product.images?.[0]?.url,
       stock: product.stock,
       quantity,
+      size,
     },
   });
 };

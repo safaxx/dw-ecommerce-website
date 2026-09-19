@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getProductDetails, clearErrors } from "../../../app/actions/ProductConstants";
+import { getProductDetails, clearErrors } from "../../../app/actions/ProductActions";
 import { addItemToCart } from "../../../app/actions/CartActions";
+import { PRODUCT_SIZES } from "../../constants/sizes";
 import Metadata from "../layout/Metadata";
 import Loader from "../layout/Loader";
 
@@ -12,6 +13,7 @@ function ProductDetails() {
   const { product, loading, error } = useSelector((state) => state.productDetails);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState("");
 
   useEffect(() => {
     dispatch(getProductDetails(id));
@@ -23,6 +25,7 @@ function ProductDetails() {
   useEffect(() => {
     setActiveImageIndex(0);
     setQuantity(1);
+    setSelectedSize("");
   }, [id]);
 
   if (loading) {
@@ -52,9 +55,13 @@ function ProductDetails() {
   const starFillPercent = (Math.max(0, Math.min(rating, 5)) / 5) * 100;
   const inStock = product.stock > 0;
 
+  const productSizes = product.sizes || [];
+  const isSizeAvailable = (size) =>
+    productSizes.length === 0 || productSizes.includes(size);
+
   const decreaseQuantity = () => setQuantity((q) => Math.max(1, q - 1));
   const increaseQuantity = () => setQuantity((q) => Math.min(product.stock, q + 1));
-  const handleAddToCart = () => dispatch(addItemToCart(product, quantity));
+  const handleAddToCart = () => dispatch(addItemToCart(product, quantity, selectedSize || undefined));
 
   return (
     <main className="page-content">
@@ -107,6 +114,28 @@ function ProductDetails() {
           <p className={`product-view-stock ${inStock ? "in-stock" : "out-of-stock"}`}>
             {inStock ? `In stock (${product.stock} available)` : "Out of stock"}
           </p>
+          {inStock && (
+            <div className="product-view-sizes" role="group" aria-label="Select size">
+              <span className="product-view-sizes-label">Size</span>
+              <div className="size-options">
+                {PRODUCT_SIZES.map((size) => {
+                  const available = isSizeAvailable(size);
+                  return (
+                    <button
+                      key={size}
+                      type="button"
+                      className={`size-option${size === selectedSize ? " active" : ""}`}
+                      onClick={() => available && setSelectedSize(size)}
+                      disabled={!available}
+                      aria-pressed={size === selectedSize}
+                    >
+                      {size}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           {inStock && (
             <div className="product-view-cart">
               <div className="product-view-quantity" role="group" aria-label="Quantity">

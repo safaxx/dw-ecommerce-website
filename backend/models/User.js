@@ -27,12 +27,19 @@ const userSchema = new mongoose.Schema({
     url: { type: String, required: true },
   },
   role: {
-    type: String, 
-    default: "user"
+    type: String,
+    default: "user",
   },
-
-  resetPasswordToken: String, 
-  resetPasswordExpire: Date
+  shippingInfo: {
+    address: { type: String, required: false, trim: true },
+    city: { type: String, required: false, trim: true },
+    state: { type: String, required: false, trim: true },
+    country: { type: String, required: false, trim: true },
+    pincode: { type: String, required: false, trim: true },
+    phoneNumber: { type: String, required: false, trim: true },
+  },
+  resetPasswordToken: String,
+  resetPasswordExpire: Date,
 });
 
 userSchema.pre("save", async function () {

@@ -40,8 +40,21 @@ class ApiFeatures {
       ? { price: priceFilter }
       : {};
 
+    const filterStock =
+      this.queryString.inStock === "true" ? { stock: { $gt: 0 } } : {};
+
+    const sizes = this.queryString.sizes
+      ? this.queryString.sizes.split(",").filter(Boolean)
+      : [];
+    const filterSizes = sizes.length ? { sizes: { $in: sizes } } : {};
+
    // console.log("Price filter:", filterPrice);
-    this.query = this.query.find({ ...filterCategory, ...filterPrice });
+    this.query = this.query.find({
+      ...filterCategory,
+      ...filterPrice,
+      ...filterStock,
+      ...filterSizes,
+    });
     return this;
   }
 

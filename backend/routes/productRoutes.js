@@ -8,6 +8,7 @@ import {
   createOrUpdateReview,
   getAllProdReviews,
   deleteProdReview,
+  getProductCategories,
 } from "../controllers/productController.js";
 import { isAuthenticated, isAuthorized } from "../middleware/auth.js";
 
@@ -20,6 +21,7 @@ router
 
 router.route("/review").put(isAuthenticated, createOrUpdateReview);
 router.route("/reviews").get(getAllProdReviews).delete(isAuthenticated, deleteProdReview);
+router.route("/categories").get(getProductCategories);
 
 router
   .route("/:id")

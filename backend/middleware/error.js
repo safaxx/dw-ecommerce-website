@@ -27,5 +27,5 @@ export function error(err, req, res, next) {
     const msg = `Json Web Token is expired`
     err = new ErrorHandler(msg, 400);
   }
-  res.status(err.statusCode).json({ success: false, error: err.message });
+  res.status(err.statusCode).json({ success: false, message: err.message });
 }

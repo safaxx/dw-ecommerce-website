@@ -152,3 +152,8 @@ export const deleteProdReview = catchError(async (req, res, next) => {
     .status(200)
     .json({ success: true, message: "Review deleted successfullly" });
 });
+
+export const getProductCategories = catchError(async (req, res) => {
+  const categories = await ProductModel.distinct("category");
+  res.status(200).json({ success: true, categories });
+});

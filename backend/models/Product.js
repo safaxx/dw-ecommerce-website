@@ -26,6 +26,11 @@ const productSchema = mongoose.Schema({
     type: String,
     required: [true, "Please enter product category"],
   },
+  sizes: {
+    type: [String],
+    enum: ["S", "M", "X", "2XL", "3XL", "4XL"],
+    default: [],
+  },
   stock: {
     type: Number,
     required: [true, "Please enter current stock"],

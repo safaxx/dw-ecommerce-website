@@ -6,10 +6,15 @@ import { getCookieOptions, generatePswrdResetToken } from "../utils/jwt.js";
 import { sendToken } from "../utils/sendToken.js";
 import { sendPasswordResetEmail } from "../utils/sendEmail.js";
 import crypto from "crypto";
+import cloudinary from "cloudinary";
 
 export const registerUser = catchError(async (req, res, next) => {
   const { name, email, password } = req.body;
+  // const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+  //   folder:'avatars',
+  //   width: 150,
 
+  // })
   const user = await UserModel.create({
     name,
     email,
@@ -57,7 +62,7 @@ export const forgotPassword = catchError(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   //send email to users
-  const resetPswrdUrl = `${req.protocol}://${req.get("host")}/api/v1/user/reset-password/${resetToken}`;
+  const resetPswrdUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/password/reset/${resetToken}`;
 
   try {
     await sendPasswordResetEmail({
@@ -141,12 +146,13 @@ export const updatePassword = catchError(async (req, res, next) => {
 });
 
 export const updateProfile = catchError(async (req, res, next) => {
-  const { name, email, avatar } = req.body;
+  const { name, email, avatar, shippingInfo } = req.body;
   const newProfile = {};
 
   if (name !== undefined) newProfile.name = name;
   if (email !== undefined) newProfile.email = email;
   if (avatar !== undefined) newProfile.avatar = avatar;
+  if (shippingInfo !== undefined) newProfile.shippingInfo = shippingInfo;
 
   const user = await UserModel.findByIdAndUpdate(req.user.id, newProfile, {
     new: true,
@@ -174,7 +180,6 @@ export const getUserDetailsAdmin = catchError(async (req, res, next) => {
 
   res.status(200).json({ sucess: true, user });
 });
-
 
 export const updateProfileAdmin = catchError(async (req, res, next) => {
   const { name, email, role } = req.body;

@@ -67,7 +67,7 @@ export const getProductDetails = catchError(async (req, res, next) => {
 
 export const createOrUpdateReview = catchError(async (req, res, next) => {
   const userId = req.user._id;
-  const userIdString = userId.toString();
+  const userIdString = String(userId);
   const { rating, comment, prodId } = req.body;
 
   const review = {
@@ -81,12 +81,12 @@ export const createOrUpdateReview = catchError(async (req, res, next) => {
   if (!prod) return next(new ErrorHandler("Product Not Found", 404));
 
   const isReviewed = prod.reviews.find(
-    (rev) => rev.userId.toString() === userIdString,
+    (rev) => rev.userId && String(rev.userId) === userIdString,
   );
 
   if (isReviewed) {
     prod.reviews.forEach((rev) => {
-      if (rev.userId.toString() === userIdString) {
+      if (rev.userId && String(rev.userId) === userIdString) {
         rev.rating = Number(rating);
         rev.comment = comment;
       }

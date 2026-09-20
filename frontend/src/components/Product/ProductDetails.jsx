@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 import { getProductDetails, clearErrors } from "../../../app/actions/ProductActions";
 import { addItemToCart } from "../../../app/actions/CartActions";
 import { PRODUCT_SIZES } from "../../constants/sizes";
@@ -9,11 +10,21 @@ import Loader from "../layout/Loader";
 
 function ProductDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { product, loading, error } = useSelector((state) => state.productDetails);
+  const { isAuthenticated } = useSelector((state) => state.user);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState("");
+  const [sizeError, setSizeError] = useState(false);
+  const [addedToCart, setAddedToCart] = useState(false);
+  const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
+  const [reviewRating, setReviewRating] = useState("5");
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  const [reviewError, setReviewError] = useState("");
+  const [reviewMessage, setReviewMessage] = useState("");
 
   useEffect(() => {
     dispatch(getProductDetails(id));
@@ -26,7 +37,20 @@ function ProductDetails() {
     setActiveImageIndex(0);
     setQuantity(1);
     setSelectedSize("");
+    setSizeError(false);
+    setAddedToCart(false);
+    setIsReviewFormOpen(false);
+    setReviewRating("5");
+    setReviewComment("");
+    setReviewError("");
+    setReviewMessage("");
   }, [id]);
+
+  useEffect(() => {
+    if (!addedToCart) return;
+    const timer = setTimeout(() => setAddedToCart(false), 2000);
+    return () => clearTimeout(timer);
+  }, [addedToCart]);
 
   if (loading) {
     return (
@@ -50,6 +74,7 @@ function ProductDetails() {
 
   const images = product.images?.length ? product.images : [];
   const activeImage = images[activeImageIndex];
+  console.log(activeImage);
   const activeImageUrl = typeof activeImage === "string" ? activeImage : activeImage?.url;
   const rating = product.rating ?? 0;
   const starFillPercent = (Math.max(0, Math.min(rating, 5)) / 5) * 100;
@@ -61,7 +86,43 @@ function ProductDetails() {
 
   const decreaseQuantity = () => setQuantity((q) => Math.max(1, q - 1));
   const increaseQuantity = () => setQuantity((q) => Math.min(product.stock, q + 1));
-  const handleAddToCart = () => dispatch(addItemToCart(product, quantity, selectedSize || undefined));
+  const handleAddToCart = () => {
+    if (!selectedSize) {
+      setSizeError(true);
+      return;
+    }
+    dispatch(addItemToCart(product, quantity, selectedSize));
+    setAddedToCart(true);
+  };
+
+  const handleReviewSubmit = async (event) => {
+    event.preventDefault();
+    setReviewSubmitting(true);
+    setReviewError("");
+    setReviewMessage("");
+
+    try {
+      const { data } = await axios.put(
+        "/api/v1/products/review",
+        {
+          rating: Number(reviewRating),
+          comment: reviewComment.trim(),
+          prodId: id,
+        },
+        { withCredentials: true },
+      );
+      dispatch(getProductDetails(id));
+      setReviewComment("");
+      setIsReviewFormOpen(false);
+      setReviewMessage(data.message || "Review submitted successfully");
+    } catch (requestError) {
+      setReviewError(
+        requestError.response?.data?.message || requestError.message,
+      );
+    } finally {
+      setReviewSubmitting(false);
+    }
+  };
 
   return (
     <main className="page-content">
@@ -112,7 +173,7 @@ function ProductDetails() {
           <p className="product-view-price">${product.price}</p>
           <p className="product-view-description">{product.description}</p>
           <p className={`product-view-stock ${inStock ? "in-stock" : "out-of-stock"}`}>
-            {inStock ? `In stock (${product.stock} available)` : "Out of stock"}
+            {inStock ? "IN STOCK" : "OUT OF STOCK"}
           </p>
           {inStock && (
             <div className="product-view-sizes" role="group" aria-label="Select size">
@@ -125,7 +186,11 @@ function ProductDetails() {
                       key={size}
                       type="button"
                       className={`size-option${size === selectedSize ? " active" : ""}`}
-                      onClick={() => available && setSelectedSize(size)}
+                      onClick={() => {
+                        if (!available) return;
+                        setSelectedSize(size);
+                        setSizeError(false);
+                      }}
                       disabled={!available}
                       aria-pressed={size === selectedSize}
                     >
@@ -134,6 +199,11 @@ function ProductDetails() {
                   );
                 })}
               </div>
+              {sizeError && (
+                <p className="size-error" role="alert">
+                  Please select a size.
+                </p>
+              )}
             </div>
           )}
           {inStock && (
@@ -164,23 +234,73 @@ function ProductDetails() {
               </button>
             </div>
           )}
+          {addedToCart && (
+            <p className="add-to-cart-success" role="status">
+              Added to cart
+            </p>
+          )}
+          <section className="product-reviews" aria-labelledby="product-reviews-title">
+            <div className="product-reviews-heading">
+              <h2 id="product-reviews-title">Reviews</h2>
+              <button
+                type="button"
+                className="write-review-button"
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    navigate("/login");
+                    return;
+                  }
+                  setReviewError("");
+                  setReviewMessage("");
+                  setIsReviewFormOpen((open) => !open);
+                }}
+              >
+                {isAuthenticated ? "Write a Review" : "Login to write a review"}
+              </button>
+            </div>
+            {reviewMessage && <p className="review-message" role="status">{reviewMessage}</p>}
+            {reviewError && <p className="review-error" role="alert">{reviewError}</p>}
+            {isReviewFormOpen && isAuthenticated && (
+              <form className="review-form" onSubmit={handleReviewSubmit}>
+                <label htmlFor="review-rating">Rating</label>
+                <select
+                  id="review-rating"
+                  value={reviewRating}
+                  onChange={(event) => setReviewRating(event.target.value)}
+                >
+                  <option value="5">5</option>
+                  <option value="4">4</option>
+                  <option value="3">3</option>
+                  <option value="2">2</option>
+                  <option value="1">1</option>
+                </select>
+                <label htmlFor="review-comment">Comment</label>
+                <textarea
+                  id="review-comment"
+                  value={reviewComment}
+                  onChange={(event) => setReviewComment(event.target.value)}
+                  rows="4"
+                  required
+                />
+                <button type="submit" disabled={reviewSubmitting}>
+                  {reviewSubmitting ? "Submitting..." : "Submit Review"}
+                </button>
+              </form>
+            )}
+            {product.reviews?.length > 0 && (
+              <ul className="review-list">
+                {product.reviews.map((review) => (
+                  <li key={review._id} className="review-item">
+                    <p className="review-name">{review.name}</p>
+                    <p className="review-rating">{review.rating} / 5</p>
+                    {review.comment && <p className="review-comment">{review.comment}</p>}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
         </div>
       </div>
-
-      {product.reviews?.length > 0 && (
-        <section className="product-reviews" aria-labelledby="product-reviews-title">
-          <h2 id="product-reviews-title">Reviews</h2>
-          <ul className="review-list">
-            {product.reviews.map((review) => (
-              <li key={review._id} className="review-item">
-                <p className="review-name">{review.name}</p>
-                <p className="review-rating">{review.rating} / 5</p>
-                {review.comment && <p className="review-comment">{review.comment}</p>}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
     </main>
   );
 }

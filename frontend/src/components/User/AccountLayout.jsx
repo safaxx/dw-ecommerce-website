@@ -18,20 +18,26 @@ const AccountLayout = () => {
     { label: "Wishlist", to: "/my-account/wishlist" },
   ];
   const linkClass = ({ isActive }) =>
-  `nav-link${isActive ? " nav-link-active" : ""}`;
-
+    `account-nav-link${isActive ? " account-nav-link-active" : ""}`;
 
   return (
-    <>
-      <nav className="desktop-nav" aria-label="Main navigation">
+    <div className="page-content account-layout">
+      <nav className="account-nav" aria-label="Account navigation">
         {navItems.map((item) => (
-          <NavLink key={item.to} to={item.to} className={linkClass}>
+          <NavLink
+            key={item.to}
+            to={item.to}
+            end={item.to === "/my-account"}
+            className={linkClass}
+          >
             {item.label}
           </NavLink>
         ))}
       </nav>
-      <Outlet/>
-    </>
+      <div className="account-layout-content">
+        <Outlet />
+      </div>
+    </div>
   );
 };
 

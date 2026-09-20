@@ -15,6 +15,8 @@ import AccountLayout from "./components/User/AccountLayout";
 import OrdersList from "./components/Order/OrdersList";
 import OrderDetails from "./components/Order/OrderDetails";
 import Wishlist from "./components/Order/WishList";
+import Cart from "./components/Cart/Cart";
+import Checkout from "./components/Cart/Checkout";
 
 function Page({ title, description }) {
   return (
@@ -68,6 +70,9 @@ function App() {
           <Route path="orders/:id" element={<OrderDetails />} />
           <Route path="wishlist" element={<Wishlist />} />
         </Route>
+
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
       <Footer />
     </>

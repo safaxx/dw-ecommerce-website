@@ -1,0 +1,108 @@
+.cart-empty {
+	margin-top: 20px;
+	color: #68706d;
+}
+
+.cart-layout {
+	display: flex;
+	align-items: flex-start;
+	gap: 48px;
+	margin-top: 32px;
+}
+
+.cart-items {
+	flex: 1;
+	min-width: 0;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.cart-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 20px;
+	padding: 20px 0;
+	border-bottom: 1px solid #d7d3ca;
+}
+
+.cart-item-image {
+	flex-shrink: 0;
+	width: 80px;
+	height: 80px;
+	border: 1px solid #d7d3ca;
+	object-fit: cover;
+}
+
+.cart-item-details {
+	flex: 1;
+	min-width: 160px;
+}
+
+.cart-item-name {
+	margin: 0 0 4px;
+	font-weight: 600;
+}
+
+.cart-item-size {
+	margin: 0;
+	color: #68706d;
+	font-size: 0.8rem;
+}
+
+.cart-item-price {
+	min-width: 70px;
+	margin: 0;
+	font-weight: 600;
+	text-align: right;
+}
+
+.cart-item-remove {
+	border: 0;
+	padding: 0;
+	color: #d05a3b;
+	background: transparent;
+	font-size: 0.8rem;
+	text-decoration: underline;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+.cart-summary {
+	flex: 0 0 280px;
+	padding: 24px;
+	border: 1px solid #d7d3ca;
+	background: #efece3;
+}
+
+.cart-summary h2 {
+	margin: 0 0 20px;
+	font-family: "Space Grotesk", sans-serif;
+	font-size: 1.2rem;
+}
+
+.cart-summary-row {
+	display: flex;
+	justify-content: space-between;
+	margin: 0;
+	font-size: 1.1rem;
+	font-weight: 700;
+}
+
+.cart-checkout-button {
+	display: block;
+	margin-top: 24px;
+	text-align: center;
+	text-decoration: none;
+}
+
+@media (max-width: 680px) {
+	.cart-layout {
+		flex-direction: column;
+	}
+
+	.cart-summary {
+		width: 100%;
+	}
+}

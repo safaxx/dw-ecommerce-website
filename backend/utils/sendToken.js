@@ -14,6 +14,7 @@ export function sendToken(user, statusCode, res, message = null) {
       email: user.email,
       avatar: user.avatar,
       role: user.role,
+      shippingInfo: user.shippingInfo,
     },
   });
 }

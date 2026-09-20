@@ -82,12 +82,13 @@ const Profile = () => {
   const handleUpdatePassword = (e) => {
     e.preventDefault();
     dispatch(updatePassword({ oldPassword, newPassword, confirmPassword }));
+    closePasswordForm();
   };
 
   const hasAddress = Boolean(user.shippingInfo?.address);
 
   return (
-    <main className="page-content my-account-page">
+    <main className="my-account-page">
       <Metadata title="My Account" />
       <h1>My Account</h1>
       {error && <p role="alert">{error}</p>}
@@ -134,11 +135,11 @@ const Profile = () => {
           </form>
         ) : (
           <div className="account-info-grid">
-            <div>
+            <div className="account-info-row">
               <span className="account-info-label">Name</span>
               <p>{user.name}</p>
             </div>
-            <div>
+            <div className="account-info-row">
               <span className="account-info-label">Email</span>
               <p>{user.email}</p>
             </div>
@@ -217,7 +218,7 @@ const Profile = () => {
           </form>
         ) : (
           <div className="account-info-grid">
-            <div>
+            <div className="account-info-row">
               <span className="account-info-label">Address</span>
               <p>
                 {hasAddress
@@ -225,7 +226,7 @@ const Profile = () => {
                   : "No address saved yet."}
               </p>
             </div>
-            <div>
+            <div className="account-info-row">
               <span className="account-info-label">Phone number</span>
               <p>{user.shippingInfo?.phoneNumber || "—"}</p>
             </div>

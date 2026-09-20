@@ -10,6 +10,11 @@ import {
 import { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  Search as SearchIcon,
+  CircleUserIcon,
+  ShoppingCartIcon,
+} from "lucide-react";
 import { logout } from "../../../../app/actions/UserActions";
 import Search from "../../Product/Search";
 
@@ -23,48 +28,12 @@ const navItems = [
 const linkClass = ({ isActive }) =>
   `nav-link${isActive ? " nav-link-active" : ""}`;
 
-function SearchIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="20"
-      height="20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <circle cx="11" cy="11" r="7" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    </svg>
-  );
-}
-
-function UserIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="20"
-      height="20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="8" r="3.5" />
-      <path d="M4.5 20c1.5-4 4.5-6 7.5-6s6 2 7.5 6" />
-    </svg>
-  );
-}
-
 function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.user);
+  const { cartItems } = useSelector((state) => state.cart);
+  const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <Disclosure as="header" className="site-header">
@@ -73,11 +42,10 @@ function Header() {
           <Search onClose={() => setIsSearchOpen(false)} />
         ) : (
           <>
-            <NavLink to="/" className="brand">
-              ALWAYS MODEST
-            </NavLink>
-
-            <div className="nav-right">
+            <div className="nav-left">
+              <NavLink to="/" className="brand">
+                ALWAYS MODEST
+              </NavLink>
               <nav className="desktop-nav" aria-label="Main navigation">
                 {navItems.map((item) => (
                   <NavLink key={item.to} to={item.to} className={linkClass}>
@@ -85,7 +53,9 @@ function Header() {
                   </NavLink>
                 ))}
               </nav>
+            </div>
 
+            <div className="nav-right">
               <div className="header-icons">
                 <button
                   type="button"
@@ -93,12 +63,16 @@ function Header() {
                   aria-label="Open search"
                   onClick={() => setIsSearchOpen(true)}
                 >
-                  <SearchIcon />
+                  <SearchIcon size={25} strokeWidth={2} aria-hidden="true" />
                 </button>
                 {isAuthenticated ? (
                   <Menu as="div" className="account-menu">
                     <MenuButton className="icon-button" aria-label="Account">
-                      <UserIcon />
+                      <CircleUserIcon
+                        size={25}
+                        strokeWidth={2}
+                        aria-hidden="true"
+                      />
                     </MenuButton>
                     <MenuItems className="account-menu-items">
                       <MenuItem>
@@ -116,9 +90,29 @@ function Header() {
                   </Menu>
                 ) : (
                   <Link to="/login" className="icon-button" aria-label="Login">
-                    <UserIcon />
+                    <CircleUserIcon
+                      size={25}
+                      strokeWidth={2}
+                      aria-hidden="true"
+                    />
                   </Link>
                 )}
+                <Link
+                  to="/cart"
+                  className="icon-button cart-icon-button"
+                  aria-label={`Cart, ${cartItemCount} item${cartItemCount === 1 ? "" : "s"}`}
+                >
+                  <ShoppingCartIcon
+                    size={25}
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  />
+                  {cartItemCount > 0 && (
+                    <span className="cart-badge" aria-hidden="true">
+                      {cartItemCount}
+                    </span>
+                  )}
+                </Link>
               </div>
 
               <DisclosureButton className="menu-button">Menu</DisclosureButton>

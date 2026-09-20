@@ -26,7 +26,7 @@ import {
   UPDATE_PROFILE_SUCCESS,
   UPDATE_PROFILE_FAIL,
 } from "../constants/UserConstants";
-
+import { clearCart, loadCart } from "./CartActions";
 export const login = (email, password) => async (dispatch) => {
   try {
     dispatch({ type: LOGIN_USER_REQUEST });
@@ -36,6 +36,7 @@ export const login = (email, password) => async (dispatch) => {
       { withCredentials: true }
     );
     dispatch({ type: LOGIN_USER_SUCCESS, payload: data.user });
+    dispatch(loadCart());
   } catch (error) {
     dispatch({
       type: LOGIN_USER_FAIL,
@@ -51,6 +52,7 @@ export const register = (userData) => async (dispatch) => {
       withCredentials: true,
     });
     dispatch({ type: REGISTER_USER_SUCCESS, payload: data.user });
+    dispatch(loadCart());
   } catch (error) {
     dispatch({
       type: REGISTER_USER_FAIL,
@@ -64,6 +66,7 @@ export const logout = () => async (dispatch) => {
     dispatch({ type: LOGOUT_USER_REQUEST });
     await axios.get("/api/v1/user/logout", { withCredentials: true });
     dispatch({ type: LOGOUT_USER_SUCCESS });
+    dispatch(clearCart());
   } catch (error) {
     dispatch({
       type: LOGOUT_USER_FAIL,
@@ -79,6 +82,7 @@ export const loadUser = () => async (dispatch) => {
       withCredentials: true,
     });
     dispatch({ type: LOAD_USER_SUCCESS, payload: data.user });
+    dispatch(loadCart());
   } catch (error) {
     dispatch({ type: LOAD_USER_FAIL });
   }

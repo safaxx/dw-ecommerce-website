@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import productRouter from "./routes/productRoutes.js"
 import userRouter from "./routes/userRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
+import cartRouter from "./routes/cartRoutes.js";
 import { error } from "./middleware/error.js";
 import bodyParser from "body-parser";
 // import fileUpload from 'express-fileupload';
@@ -23,6 +24,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/orders", orderRouter);
+app.use("/api/v1/cart", cartRouter);
 app.use(error)
 
 

@@ -42,6 +42,8 @@ export const userReducer = (
       return {
         ...state,
         loading: true,
+        error: null,
+        message: null,
       };
     case REGISTER_USER_SUCCESS:
     case LOGIN_USER_SUCCESS:

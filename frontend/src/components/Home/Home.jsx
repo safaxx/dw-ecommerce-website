@@ -10,8 +10,8 @@ function FeaturedProducts() {
   const { products, loading, error } = useSelector((state) => state.products);
 
   useEffect(() => {
-    dispatch(getProducts());
-  }, [dispatch]);
+  dispatch(getProducts("", 1, "", "", "", false, [], true));
+}, [dispatch]);
 
   return (
     <section
@@ -22,9 +22,11 @@ function FeaturedProducts() {
       {loading && <Loader />}
       {error && <p role="alert">{error}</p>}
       <div className="product-grid">
-        {products.map((product) => (
-          <Product key={product._id} product={product} />
-        ))}
+        {products
+          .filter((product) => product.featuredProduct)
+          .map((product) => (
+            <Product key={product._id} product={product} />
+          ))}
       </div>
     </section>
   );
@@ -39,7 +41,7 @@ function Home() {
         <p>Browse our most loved essentials for everyday living.</p>
       </main>
       <hr className="section-divider" />
-      {/* <FeaturedProducts /> */}
+      <FeaturedProducts />
     </>
   );
 }

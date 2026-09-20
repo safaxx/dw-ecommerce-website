@@ -28,7 +28,7 @@ const productSchema = mongoose.Schema({
   },
   sizes: {
     type: [String],
-    enum: ["S", "M", "X", "2XL", "3XL", "4XL"],
+    enum: ["S", "M", "L", "2XL", "3XL", "4XL"],
     default: [],
   },
   stock: {
@@ -51,6 +51,7 @@ const productSchema = mongoose.Schema({
   ],
   createdBy: { type: mongoose.Schema.ObjectId, ref: "User", required: true },
   createdAt: { type: Date, default: Date.now },
+  featuredProduct: {type: Boolean, default: false}
 });
 
 const ProductModel = mongoose.model("Product", productSchema);

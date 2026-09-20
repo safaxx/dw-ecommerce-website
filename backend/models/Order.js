@@ -37,8 +37,8 @@ const orderSchema = new mongoose.Schema({
     paidAt: { type: Date },
   },
   itemsPrice: { type: Number, required: true, min: 0 },
-  taxPrice: { type: Number, required: true, min: 0 },
-  shippingPrice: { type: Number, required: true, min: 0 },
+  taxPrice: { type: Number, required: true, min: 2 },
+  shippingPrice: { type: Number, required: true, min: 5 },
   totalPrice: { type: Number, required: true, min: 0 },
   orderStatus: {
     type: String,

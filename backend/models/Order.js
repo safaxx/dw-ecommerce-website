@@ -47,6 +47,7 @@ const orderSchema = new mongoose.Schema({
   },
   deliveredAt: { type: Date },
   createdAt: { type: Date, default: Date.now },
+  paymentMethod: { type: String, enum: ["COD", "Razorpay"], required: true}
 });
 
 const OrderModel = mongoose.model("Order", orderSchema);

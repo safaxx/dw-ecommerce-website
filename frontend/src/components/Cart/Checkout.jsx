@@ -8,6 +8,7 @@ import ShippingDetails from "./ShippingDetails";
 import ConfirmOrder from "./ConfirmOrder";
 import Payment from "./Payment";
 import { clearSavedCart } from "../../../app/actions/CartActions";
+import { loadScript } from "../../utils/razorpayLoadScript";
 import "./Checkout.css";
 
 const initialShippingInfo = {
@@ -28,13 +29,14 @@ const Checkout = () => {
   const [shippingInfo, setShippingInfo] = useState(initialShippingInfo);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("COD");
 
   const itemsPrice = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0,
   );
-  const taxPrice = 0;
-  const shippingPrice = 0;
+  const taxPrice = 2;
+  const shippingPrice = 5;
   const totalPrice = itemsPrice + taxPrice + shippingPrice;
 
   useEffect(() => {
@@ -61,34 +63,95 @@ const Checkout = () => {
     setShippingInfo((current) => ({ ...current, [name]: value }));
   };
 
+  const createOrder = async (paymentInfo) => {
+    const { data } = await axios.post("/api/v1/orders/create", {
+      shippingInfo,
+      orderItems: cartItems.map((item) => ({
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        image: item.image,
+        product: item.product,
+      })),
+      paymentInfo,
+      paymentMethod,
+      itemsPrice,
+      taxPrice,
+      shippingPrice,
+      totalPrice,
+    });
+    dispatch(clearSavedCart());
+    navigate(`/my-account/orders/${data.order._id}`);
+  };
+
   const handlePlaceOrder = async () => {
     setSubmitting(true);
     setError("");
 
+    if (paymentMethod === "COD") {
+      try {
+        await createOrder({ id: "pending", status: "pending" });
+      } catch (requestError) {
+        setError(requestError.response?.data?.message || requestError.message);
+        setSubmitting(false);
+      }
+      return;
+    }
+
     try {
-      const { data } = await axios.post("/api/v1/orders/create", {
-        shippingInfo,
-        orderItems: cartItems.map((item) => ({
-          name: item.name,
-          quantity: item.quantity,
-          price: item.price,
-          image: item.image,
-          product: item.product,
-        })),
-        paymentInfo: {
-          id: "pending",
-          status: "pending",
-        },
-        itemsPrice,
-        taxPrice,
-        shippingPrice,
-        totalPrice,
+      const scriptLoaded = await loadScript(
+        "https://checkout.razorpay.com/v1/checkout.js",
+      );
+      if (!scriptLoaded) {
+        setError("Razorpay SDK failed to load. Check your internet connection.");
+        setSubmitting(false);
+        return;
+      }
+
+      const { data } = await axios.post("/api/v1/payment/razorpay/order", {
+        amount: totalPrice,
       });
-      dispatch(clearSavedCart());
-      navigate(`/my-account/orders/${data.order._id}`);
+
+      const options = {
+        key: data.keyId,
+        amount: data.order.amount,
+        currency: data.order.currency,
+        order_id: data.order.id,
+        name: "Always Modest",
+        description: "Order Payment",
+        prefill: {
+          name: user?.name,
+          email: user?.email,
+        },
+        theme: {
+          color: "#000000",
+        },
+        handler: async (response) => {
+          try {
+            await axios.post("/api/v1/payment/razorpay/verify", {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+            await createOrder({
+              id: response.razorpay_payment_id,
+              status: "succeeded",
+            });
+          } catch (verifyError) {
+            setError(
+              verifyError.response?.data?.message || verifyError.message,
+            );
+            setSubmitting(false);
+          }
+        },
+        modal: {
+          ondismiss: () => setSubmitting(false),
+        },
+      };
+
+      new window.Razorpay(options).open();
     } catch (requestError) {
       setError(requestError.response?.data?.message || requestError.message);
-    } finally {
       setSubmitting(false);
     }
   };
@@ -128,6 +191,8 @@ const Checkout = () => {
             error={error}
             onBack={() => setActiveStep(1)}
             onSubmit={handlePlaceOrder}
+            paymentMethod={paymentMethod}
+            onPaymentMethodChange={setPaymentMethod}
           />
         )}
       </div>

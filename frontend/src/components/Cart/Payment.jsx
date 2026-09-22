@@ -1,19 +1,54 @@
-const Payment = ({ totalPrice, loading, error, onBack, onSubmit }) => (
+const Payment = ({
+  totalPrice,
+  loading,
+  error,
+  onBack,
+  onSubmit,
+  paymentMethod,
+  onPaymentMethodChange,
+}) => (
   <section className="checkout-payment">
     <h2>Payment</h2>
+    <label>
+      Payment method
+      <select
+        value={paymentMethod}
+        onChange={(event) => onPaymentMethodChange(event.target.value)}
+        disabled={loading}
+      >
+        <option value="COD">Cash on Delivery</option>
+        <option value="Razorpay">Razorpay</option>
+      </select>
+    </label>
     <p className="checkout-payment-note">
-      Payment processing is not connected yet. Your order will be created with a pending payment status.
+      {paymentMethod === "Razorpay"
+        ? "You'll be redirected to Razorpay to complete payment securely."
+        : "Pay in cash when your order is delivered."}
     </p>
     <div className="checkout-total checkout-payment-total">
       <span>Amount due</span>
       <strong>${totalPrice.toFixed(2)}</strong>
     </div>
-    {error && <p className="checkout-error" role="alert">{error}</p>}
+    {error && (
+      <p className="checkout-error" role="alert">
+        {error}
+      </p>
+    )}
     <div className="checkout-actions">
-      <button type="button" className="checkout-secondary-button" onClick={onBack} disabled={loading}>
+      <button
+        type="button"
+        className="checkout-secondary-button"
+        onClick={onBack}
+        disabled={loading}
+      >
         Back
       </button>
-      <button type="button" className="checkout-primary-button" onClick={onSubmit} disabled={loading}>
+      <button
+        type="button"
+        className="checkout-primary-button"
+        onClick={onSubmit}
+        disabled={loading}
+      >
         {loading ? "Placing order..." : "Place Order"}
       </button>
     </div>

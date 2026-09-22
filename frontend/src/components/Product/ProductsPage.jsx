@@ -1,6 +1,6 @@
 import Metadata from "../layout/Metadata";
 import Loader from "../layout/Loader";
-import Product from "../Home/Product";
+import Product from "./Product";
 import { getProducts } from "../../../app/actions/ProductActions";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";

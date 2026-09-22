@@ -1,5 +1,3 @@
-import path from "node:path";
-import app from "./app.js";
 import dotenv from "dotenv";
 import { connectToDB } from "./config/db.js";
 import cloudinary from 'cloudinary';
@@ -14,7 +12,10 @@ process.on("uncaughtException", (err) => {
 });
 
 //config
+// dotenv.config({ path: "config/config.env" });
 dotenv.config({ path: "backend/config/config.env" });
+
+const { default: app } = await import("./app.js");
 
 connectToDB();
 

@@ -60,8 +60,27 @@ export const getOrderDetails = catchError(async (req, res, next) => {
   });
 });
 
+export const getOrderDetailsAdmin = catchError(async (req, res, next) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return next(new ErrorHandler("Invalid order ID", 400));
+  }
+
+  const order = await OrderModel.findById(req.params.id).populate(
+    "user",
+    "name email",
+  );
+  if (!order) return next(new ErrorHandler("Order Not Found", 404));
+
+  res.status(200).json({
+    success: true,
+    order,
+  });
+});
+
 export const getAllOrders = catchError(async (req, res) => {
-  const orders = await OrderModel.find().sort({ createdAt: -1 });
+  const orders = await OrderModel.find()
+    .populate("user", "name email")
+    .sort({ createdAt: -1 });
 
   res.status(200).json({
     success: true,

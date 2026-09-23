@@ -20,7 +20,9 @@ import Checkout from "./components/Cart/Checkout";
 import AdminLayout from "./components/Admin/AdminLayout";
 import AdminDashboard from "./components/Admin/AdminDashboard";
 import AdminProducts from "./components/Admin/AdminProducts";
+import SubmitProductForm from "./components/Admin/SubmitProductForm";
 import AdminOrders from "./components/Admin/AdminOrders";
+import AdminOrderDetails from "./components/Admin/AdminOrderDetails";
 import AdminUsers from "./components/Admin/AdminUsers";
 import AdminReviews from "./components/Admin/AdminReviews";
 
@@ -85,7 +87,10 @@ function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="products" element={<AdminProducts />} />
+          <Route path="products/new" element={<SubmitProductForm />} />
+          <Route path="products/:id/edit" element={<SubmitProductForm />} />
           <Route path="orders" element={<AdminOrders />} />
+          <Route path="orders/:id" element={<AdminOrderDetails />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="reviews" element={<AdminReviews />} />
         </Route>

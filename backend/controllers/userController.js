@@ -171,14 +171,14 @@ export const updateProfile = catchError(async (req, res, next) => {
 
 export const getAllUsers = catchError(async (req, res, next) => {
   const users = await UserModel.find();
-  res.status(200).json({ sucess: true, users });
+  res.status(200).json({ success: true, users });
 });
 
 export const getUserDetailsAdmin = catchError(async (req, res, next) => {
   const user = await UserModel.findById(req.params.id);
   if (!user) return next(new ErrorHandler("User not found", 404));
 
-  res.status(200).json({ sucess: true, user });
+  res.status(200).json({ success: true, user });
 });
 
 export const updateProfileAdmin = catchError(async (req, res, next) => {
@@ -189,7 +189,7 @@ export const updateProfileAdmin = catchError(async (req, res, next) => {
   if (email !== undefined) newProfile.email = email;
   if (role !== undefined) newProfile.role = role;
 
-  const user = await UserModel.findByIdAndUpdate(req.user.id, newProfile, {
+  const user = await UserModel.findByIdAndUpdate(req.params.id, newProfile, {
     new: true,
     runValidators: true,
     useFindAndModify: false,

@@ -4,6 +4,7 @@ import {
   deleteOrder,
   getAllOrders,
   getOrderDetails,
+  getOrderDetailsAdmin,
   getUserOrders,
   updateOrderStatus,
 } from "../controllers/orderController.js";
@@ -21,6 +22,7 @@ router.route("/my-orders").get(isAuthenticated, getUserOrders);
 
 router
   .route("/admin/:id")
+  .get(isAuthenticated, isAuthorized("admin"), getOrderDetailsAdmin)
   .put(isAuthenticated, isAuthorized("admin"), updateOrderStatus)
   .delete(isAuthenticated, isAuthorized("admin"), deleteOrder);
   

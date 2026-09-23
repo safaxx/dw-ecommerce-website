@@ -8,7 +8,7 @@ import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { PRODUCT_SIZES } from "../../constants/sizes";
 
-function AllProducts() {
+export function AllProducts({ isAdmin, onEdit, onDelete }) {
   const dispatch = useDispatch();
   const { products, loading, error, count } = useSelector(
     (state) => state.products,
@@ -160,7 +160,13 @@ function AllProducts() {
       {error && <p role="alert">{error}</p>}
       <div className="product-grid">
         {products.map((product) => (
-          <Product key={product._id} product={product} />
+          <Product
+            key={product._id}
+            product={product}
+            isAdmin={isAdmin}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
         ))}
       </div>
       {totalPages > 1 && (

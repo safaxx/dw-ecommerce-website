@@ -28,13 +28,13 @@ router.route("/my-account/update").put(isAuthenticated, updateProfile);
 
 //admin routes
 router
+  .route("/admin/all-users")
+  .get(isAuthenticated, isAuthorized("admin"), getAllUsers);
+
+router
   .route("/admin/:id")
   .get(isAuthenticated, isAuthorized("admin"), getUserDetailsAdmin)
   .put(isAuthenticated, isAuthorized("admin"), updateProfileAdmin)
   .delete(isAuthenticated, isAuthorized("admin"), deleteUser);
-
-router
-  .route("/admin/all-users")
-  .get(isAuthenticated, isAuthorized("admin"), getAllUsers);
 
 export default router;

@@ -34,7 +34,8 @@
   gap: 7px;
 }
 
-.checkout-form label span {
+.checkout-form label span,
+.checkout-payment-field span {
   color: #68706d;
   font-size: 0.78rem;
   font-weight: 600;
@@ -42,7 +43,8 @@
   text-transform: uppercase;
 }
 
-.checkout-form input {
+.checkout-form input,
+.checkout-payment-select {
   width: 100%;
   border: 1px solid #d7d3ca;
   padding: 11px 12px;
@@ -51,9 +53,17 @@
   font: inherit;
 }
 
-.checkout-form input:focus {
+.checkout-form input:focus,
+.checkout-payment-select:focus {
   outline: 2px solid #d05a3b;
   outline-offset: 1px;
+}
+
+.checkout-payment-field {
+  display: grid;
+  gap: 8px;
+  max-width: 420px;
+  margin-bottom: 18px;
 }
 
 .checkout-primary-button,

@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import ErrorHandler from "../utils/errorHandler.js";
 import catchError from "../middleware/catchAsyncErrors.js";
 import ApiFeatures from "../utils/apiFeatures.js";
+import cloudinary from "cloudinary";
 
 export const getAllProducts = catchError(async (req, res) => {
   const resultsPerPage = 8;
@@ -19,11 +20,18 @@ export const getAllProducts = catchError(async (req, res) => {
 });
 //admin routes
 export const createProduct = catchError(async (req, res, next) => {
-  req.body.createdBy = req.user.id;
-  const product = await ProductModel.create(req.body);
+  const productsInput = Array.isArray(req.body) ? req.body : [req.body];
+
+  const productsToCreate = productsInput.map((product) => ({
+    ...product,
+    createdBy: req.user.id,
+  }));
+
+  const products = await ProductModel.insertMany(productsToCreate);
+
   res.status(201).json({
     success: true,
-    product,
+    products,
   });
 });
 
@@ -156,4 +164,14 @@ export const deleteProdReview = catchError(async (req, res, next) => {
 export const getProductCategories = catchError(async (req, res) => {
   const categories = await ProductModel.distinct("category");
   res.status(200).json({ success: true, categories });
+});
+
+export const uploadProductImage = catchError(async (req, res) => {
+  const { image } = req.body;
+  const result = await cloudinary.uploader.upload(image, {
+    folder: "products",
+  });
+  res
+    .status(200)
+    .json({ success: true, public_id: result.public_id, url: result.secure_url });
 });

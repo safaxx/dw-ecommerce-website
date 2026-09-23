@@ -9,9 +9,10 @@ const Payment = ({
 }) => (
   <section className="checkout-payment">
     <h2>Payment</h2>
-    <label>
-      Payment method
+    <label className="checkout-payment-field">
+      <span>Payment method</span>
       <select
+        className="checkout-payment-select"
         value={paymentMethod}
         onChange={(event) => onPaymentMethodChange(event.target.value)}
         disabled={loading}

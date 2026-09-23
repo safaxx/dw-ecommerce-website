@@ -31,7 +31,7 @@ const linkClass = ({ isActive }) =>
 function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((state) => state.user);
+  const { isAuthenticated, user } = useSelector((state) => state.user);
   const { cartItems } = useSelector((state) => state.cart);
   const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -75,6 +75,11 @@ function Header() {
                       />
                     </MenuButton>
                     <MenuItems className="account-menu-items">
+                      {user?.role === "admin" && (
+                        <MenuItem>
+                          <Link to="/admin">Dashboard</Link>
+                        </MenuItem>
+                      )}
                       <MenuItem>
                         <Link to="/my-account">Profile</Link>
                       </MenuItem>

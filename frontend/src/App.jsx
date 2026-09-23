@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Footer from "./components/layout/Footer/Footer";
 import Header from "./components/layout/Header/Header";
@@ -17,6 +17,12 @@ import OrderDetails from "./components/Order/OrderDetails";
 import Wishlist from "./components/Order/WishList";
 import Cart from "./components/Cart/Cart";
 import Checkout from "./components/Cart/Checkout";
+import AdminLayout from "./components/Admin/AdminLayout";
+import AdminDashboard from "./components/Admin/AdminDashboard";
+import AdminProducts from "./components/Admin/AdminProducts";
+import AdminOrders from "./components/Admin/AdminOrders";
+import AdminUsers from "./components/Admin/AdminUsers";
+import AdminReviews from "./components/Admin/AdminReviews";
 
 function Page({ title, description }) {
   return (
@@ -30,6 +36,8 @@ function Page({ title, description }) {
 
 function App() {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
   useEffect(() => {
     dispatch(loadUser());
@@ -37,7 +45,7 @@ function App() {
 
   return (
     <>
-      <Header />
+      {!isAdminRoute && <Header />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/products/:id" element={<ProductDetails />} />
@@ -73,6 +81,14 @@ function App() {
 
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
+
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="reviews" element={<AdminReviews />} />
+        </Route>
       </Routes>
       <Footer />
     </>

@@ -9,6 +9,7 @@ import {
   getAllProdReviews,
   deleteProdReview,
   getProductCategories,
+  uploadProductImage,
 } from "../controllers/productController.js";
 import { isAuthenticated, isAuthorized } from "../middleware/auth.js";
 
@@ -28,4 +29,7 @@ router
   .put(isAuthenticated, isAuthorized("admin"), updateProduct)
   .delete(isAuthenticated, isAuthorized("admin"), deleteProduct)
   .get(getProductDetails);
+
+
+router.route("/upload-image").post(isAuthenticated, isAuthorized("admin"), uploadProductImage);
 export default router;

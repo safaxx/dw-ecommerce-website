@@ -27,7 +27,7 @@ import {
 } from "../constants/UserConstants";
 
 export const userReducer = (
-  state = { loading: false, isAuthenticated: false, user: null },
+  state = { loading: true, isAuthenticated: false, user: null },
   action,
 ) => {
   switch (action.type) {

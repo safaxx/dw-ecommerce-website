@@ -9,20 +9,23 @@ export function signToken(userId) {
 }
 
 export function getCookieOptions() {
+  const isProduction = process.env.NODE_ENV === "production";
   return {
     expires: new Date(
       Date.now() + Number(process.env.COOKIE_EXPIRES || 1) * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
-    /** helps prevent the cookie
-     * from being sent in most cross-site requests, 
-     * reducing CSRF risk */
-    sameSite: "lax", 
+    /**
+     * Development: "lax" — frontend and API share an origin via the Vite proxy.
+     * Production: "none" — frontend (vercel.app) and API (onrender.com) are
+     * different sites, so the cookie must be sent on cross-site requests.
+     */
+    sameSite: isProduction ? "none" : "lax",
     /**
      * Development: cookie works over regular http.
-     * Production: cookie is sent only over https.  
+     * Production: cookie is sent only over https (required for sameSite "none").
      */
-    secure: process.env.NODE_ENV === "production",
+    secure: isProduction,
   };
 }
 
